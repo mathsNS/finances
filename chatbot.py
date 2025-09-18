@@ -1,6 +1,6 @@
 """chatbot.py
 
-Módulo que contém classes de domínio e lógica principal do chatbot.
+Módulo que contém classes de domínio e lógica principal do  
 """
 import json
 import random
@@ -58,7 +58,7 @@ class ChatBot:
                 text = f.read().strip()
                 if not text:
                     return
-                # naive parse: split by --- which we used in to_line
+                # to_line
                 parts = text.split('---\n')
                 for p in parts:
                     if not p.strip():
@@ -74,12 +74,11 @@ class ChatBot:
         try:
             with open(self.counters_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except FileNotFoundError:
-            return {"formal":0, "engracado":0, "rude":0}
+        except: return {"formal":0,"engracado":0,"rude":0}
 
-    def save_counters(self):
-        with open(self.counters_path, 'w', encoding='utf-8') as f:
-            json.dump(self.counters, f, ensure_ascii=False, indent=2)
+    def _save_counters(self):
+        with open(self.counters_path,'w',encoding='utf-8') as f:
+            json.dump(self.counters,f,ensure_ascii=False,indent=2)
 
     def persist_history(self):
         with open(self.history_path, 'a', encoding='utf-8') as f:
@@ -87,19 +86,19 @@ class ChatBot:
                 f.write(entry)
 
     def history_to_persist(self):
-        # returns lines to append and also clears the in-memory ephemeral history
+        # retorna a linha e apaga o historico 
         lines = [e.to_line() for e in self.history]
         return lines
 
     def _save_learned(self, question: str, answer: str):
         with open(self.learned_path, 'a', encoding='utf-8') as f:
             f.write(f"{question}|{answer}\n")
-        # also update main QA dict file so future runs know it
+        # atualiza o QA
         with open(self.qa_path, 'a', encoding='utf-8') as f:
             f.write(f"{question}|{answer};;;{answer}\n")
 
     def get_last_history(self, n=5):
-        # returns last n persisted interactions from file (not in-memory)
+        # ultimas interacoes que nao estao na memoria 
         try:
             with open(self.history_path, 'r', encoding='utf-8') as f:
                 text = f.read().strip()
@@ -119,42 +118,38 @@ class ChatBot:
             return []
 
     def answer(self, question: str, personality: str) -> str:
-        """Return a response based on the question and personality.
-
-        Looks for keyword matches in the QA dictionary. If found, returns a random variant.
-        If not found, returns None signaling learning-mode.
-        Personality affects phrasing but not the content.
-        """
+        #procura no dicionario 
         q = question.lower()
-        # simple keyword matching: check if any qa key is a substring
+        # verificando se alguma tecla do QA esta sendo pressionada 
         for key, variants in self.qa.items():
             if key in q:
                 base = random.choice(variants)
                 return self._apply_personality(base, personality)
-        # not found
+        #(caso nao encontre)
         return None
 
-    def _apply_personality(self, text: str, personality: str) -> str:
-        if personality == 'formal':
-            self.counters['formal'] = self.counters.get('formal',0) + 1
+    def _apply_personality(self,text,personality):
+        if personality=='formal':
+            self.counters['formal']+=1
+            self._save_counters()
             return f"Prezada(o), {text}"
-        elif personality == 'engracado':
-            self.counters['engracado'] = self.counters.get('engracado',0) + 1
+        elif personality=='engracado':
+            self.counters['engracado']+=1
+            self._save_counters()
             return f"Tá ligado? {text} 😄"
-        elif personality == 'rude':
-            self.counters['rude'] = self.counters.get('rude',0) + 1
+        elif personality=='rude':
+            self.counters['rude']+=1
+            self._save_counters()
             return f"Vamos lá: {text}."
-        else:
-            # unknown personality -- treat as neutral
-            return text
+        return text
 
     def register_interaction(self, user_q: str, bot_a: str):
         entry = ConversationEntry(user_q, bot_a)
         self.history.append(entry)
-        # append immediately to persisted history file
+        #historico dos arquivos 
         with open(self.history_path, 'a', encoding='utf-8') as f:
             f.write(entry.to_line())
 
     def learn(self, question: str, answer: str):
-        # save both to learned file and append to qa_dict
+        # salvar as questoes do modo aprendizado
         self._save_learned(question, answer)

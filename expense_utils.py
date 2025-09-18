@@ -1,6 +1,6 @@
 """expense_utils.py
 
-Pequeno módulo que demonstra uso de listas e dicionários para registrar gastos temporários.
+modulo que demonstra o uso de listas e dicionarios.
 """
 from typing import List, Dict
 

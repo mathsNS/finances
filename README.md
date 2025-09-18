@@ -1,6 +1,5 @@
 Chatbot Financeiro Inteligente (Streamlit)
 =========================================
-Projeto de exemplo entregue pronto para execução.
 
 Como executar:
 1. Instale as dependências:
