@@ -5,6 +5,32 @@ Matheus Nogueira – @mathsNS
 Abner Levi - @Abnerlevi
 Maria Antônia - @mariastrajano
 
+👥 Funções do Time – Chatbot Financeiro Inteligente
+
+Este projeto foi desenvolvido por três integrantes, cada um com funções específicas dentro do sistema:
+
+Matheus Nogueira
+
+Desenvolvimento back-end
+
+Ajustes no código
+
+Maria Antonia
+
+Base do código
+
+Desenvolvimento do quadro de Kanban e README
+
+Gerenciamento dos utilitários
+
+Abner
+
+Simulações de investimentos simples
+
+Desenvolvimento do sistema de Q|A (pergunta e resposta)
+
+Código da interface gráfica
+
 📌 Descrição
 
 O Chatbot Financeiro Inteligente é um sistema educativo desenvolvido em Python com interface gráfica (Tkinter) que auxilia usuários a controlar suas finanças pessoais de forma prática e interativa. O bot permite registrar despesas, categorizar gastos, receber alertas personalizados, gerar relatórios e ainda ensina conceitos de educação financeira.
